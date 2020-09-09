@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, ScrollView,TouchableOpacity} from 'react-native';
+import { Text, View, Image, ScrollView,TouchableOpacity } from 'react-native';
 
 import { Button } from 'native-base';
 import { Input, Icon } from 'react-native-elements';
@@ -7,15 +7,16 @@ import PropTypes from 'prop-types';
 import { validation, moderateScale } from '../../constants/functions';
 
 import {Styles} from '../../assets/styles/login';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class LoginForm extends Component {
+export default class RegisterForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       email: undefined,
       password: undefined,
+      passwordConfirmation:undefined,
+      phoneNumber:undefined,
       showPassword: false
     };
 
@@ -31,6 +32,7 @@ export default class LoginForm extends Component {
   render() {
     const { email, password, showPassword } = this.state;
     const { handleCreateAccount, handleLogin } = this.props;
+    console.log(this.props.navigation);
 
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -96,6 +98,56 @@ export default class LoginForm extends Component {
           }}
         />
 
+        <Input
+          label='Password Confirmation'
+          placeholder='Type your password here'
+          secureTextEntry={showPassword ? false : true}
+          value={password}         
+          inputContainerStyle={Styles.inputContainerStyle}
+          inputStyle={Styles.inputStyle}
+          labelStyle={Styles.textboxLabelStyle}
+          leftIcon={<Icon name='key' type='simple-line-icon' size={moderateScale(20)} />}
+          leftIconContainerStyle={{ opacity: 0.5 }}
+          rightIcon={
+            <Icon
+              name={showPassword ? 'eye-off-outline' : 'eye'}
+              type={showPassword ? 'material-community' : 'simple-line-icon'}
+              onPress={() => this.setState({ showPassword: !showPassword })}
+              size={moderateScale(20)}
+            />
+          }
+          rightIconContainerStyle={{ paddingRight: 5, opacity: 0.5 }}
+          onChangeText={value => this.setState({ passwordConfirmation: value })}
+          onSubmitEditing={() => handleLogin(email, password)}
+          returnKeyType='done'
+          blurOnSubmit
+          ref={input => {
+            this.inputs['two'] = input;
+          }}
+        />
+
+        <Input
+          label='Phone Number'
+          placeholder='Type your phone number here'
+          value={email}         
+          inputContainerStyle={Styles.inputContainerStyle}
+          inputStyle={Styles.inputStyle}
+          labelStyle={Styles.textboxLabelStyle}
+          leftIcon={<Icon name='envelope' type='simple-line-icon' size={moderateScale(20)} />}
+          leftIconContainerStyle={{ opacity: 0.5 }}
+          onChangeText={(phoneNumber)=>this.setState({phoneNumber})}
+          errorMessage={this.state.phoneNumberError ? 'Enter a valid phone number' : ''}
+          keyboardType='numeric'
+          blurOnSubmit={false}
+          onSubmitEditing={() => {
+            this.focusNextInput('two');
+          }}
+          returnKeyType='next'
+          ref={input => {
+            this.inputs['one'] = input;
+          }}
+        />
+
         <View style={{ marginTop: 30 }} />
 
         <View style={{marginLeft:10,marginRight:10}}>
@@ -103,9 +155,9 @@ export default class LoginForm extends Component {
               style={Styles.button}
               block
               info
-              onPress={()=>this.props.navigation.navigate('Order')}
+              onPress={()=>this.props.handleLogin(email, password)}
             >
-                <Text style={Styles.buttonText}>Log In</Text>
+                <Text style={Styles.buttonText}>Sign up</Text>
             </Button>
 
             <Text
@@ -115,12 +167,10 @@ export default class LoginForm extends Component {
             Forgot Password?
             </Text>
         
-            <View style={Styles.bottomWrapper}>
-               <TouchableOpacity onPress={()=>this.props.navigation.navigate('Register')}>
-                <Text style={Styles.bottomText}>You dont have an account? Sign up</Text>
+            <View style={Styles.registerBottomWrapper}>             
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('Login')}>
+                <Text style={Styles.bottomText}>Already have an account? Sign in</Text>
                </TouchableOpacity>     
-                    
-                
             </View>
             
         </View>

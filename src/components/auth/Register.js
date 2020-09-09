@@ -6,12 +6,13 @@ import PropTypes from 'prop-types';
 import {Styles} from '../../assets/styles/login';
 import { statusBarRed } from '../../constants/styles';
 import { AsyncStorage } from 'react-native';
-import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 import { Content } from 'native-base';
 import NetInfo from '@react-native-community/netinfo';
 import {primaryColor,primaryWhite, primaryColorRed} from '../../constants/styles';
 
-export default class Login extends Component {
+
+export default class Register extends Component {
     static navigationOptions = {
         header: null,
         drawerLockMode: 'locked-closed'
@@ -56,7 +57,7 @@ export default class Login extends Component {
                 
                 {NetConnected && !signInPressed && (
                     <View style={{ flex: 1 }}>
-                        <LoginForm navigation={this.props.navigation}/>
+                        <RegisterForm navigation={this.props.navigation}/>
                     </View>
                 )}
         {signInPressed && (
@@ -88,6 +89,6 @@ export default class Login extends Component {
     }
 }
 
-Login.propTypes = {
+Register.propTypes = {
   navigation: PropTypes.object.isRequired
 };

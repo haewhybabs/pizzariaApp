@@ -90,6 +90,12 @@ export const Styles = StyleSheet.create({
         width: '100%',
         marginBottom: 10
     },
+    registerBottomWrapper:{
+        
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 10
+    },
     bottomText: {
         
         marginTop: 10,

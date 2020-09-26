@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {Text,TouchableOpacity } from 'react-native';
-import { primaryColor } from '../constants/styles';
+import { primaryColor } from '../../constants/styles';
 
 import {Button,Left,Body,Header} from 'native-base';
 

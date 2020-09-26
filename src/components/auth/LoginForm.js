@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, Image, ScrollView,TouchableOpacity} from 'react-native';
+import { Text, View, Image, ScrollView,TouchableOpacity,AsyncStorage,ToastAndroid} from 'react-native';
 
 import { Button } from 'native-base';
 import { Input, Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
-import { validation, moderateScale } from '../../constants/functions';
-
+import { validation, moderateScale,fetchAPI } from '../../constants/functions';
+import { apiUrl } from '../../constants/strings';
+import SpinView from '../common/Spinner';
 import {Styles} from '../../assets/styles/login';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -16,12 +17,34 @@ export default class LoginForm extends Component {
     this.state = {
       email: undefined,
       password: undefined,
-      showPassword: false
+      showPassword: false,
+      data:undefined
     };
 
     this.focusNextInput = this.focusNextInput.bind(this);
 
     this.inputs = {};
+  }
+
+  async handleLogin(){
+    let {email,password}=this.state;
+    let inputData={email,password}
+
+    await fetchAPI('POST',inputData,'login',this)
+    let data=this.state.data;
+    if(data.success==0){
+      ToastAndroid.show('Invalid Email or Password',ToastAndroid.LONG)
+      return;
+    }
+
+    
+    
+
+    AsyncStorage.setItem('user', JSON.stringify(data.response), () =>
+      this.props.navigation.navigate('App')
+    );
+    ToastAndroid.show(`Welcome ${data.response.user.name}`, ToastAndroid.LONG);
+    
   }
 
   focusNextInput(id) {
@@ -88,7 +111,7 @@ export default class LoginForm extends Component {
           }
           rightIconContainerStyle={{ paddingRight: 5, opacity: 0.5 }}
           onChangeText={value => this.setState({ password: value })}
-          onSubmitEditing={() => handleLogin(email, password)}
+          
           returnKeyType='done'
           blurOnSubmit
           ref={input => {
@@ -103,7 +126,7 @@ export default class LoginForm extends Component {
               style={Styles.button}
               block
               info
-              onPress={()=>this.props.navigation.navigate('Order')}
+              onPress={()=>this.handleLogin()}
             >
                 <Text style={Styles.buttonText}>Log In</Text>
             </Button>

@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import { statusBarBlack,statusBarRed, primaryColorRed, primaryBlack, primaryColor } from '../../constants/styles';
 import { AsyncStorage } from 'react-native';
 import {Styles} from '../../assets/styles/profile';
-import FooterScreen from '../Footer';
+import FooterScreen from '../common/Footer';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Right,Left,Row,Body} from 'native-base';
 import ProfileForm from './ProfileForm';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements'
-import HeaderScreen from '../Header';
+import HeaderScreen from '../common/Header';
 
 export default class Profile extends Component{
 

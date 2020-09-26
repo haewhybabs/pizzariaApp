@@ -1,12 +1,38 @@
 import { Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {apiUrl} from './strings';
 const { width, height } = Dimensions.get('window');
 
 export const getUserAsync = async() => {
     const user = await AsyncStorage.getItem('user');
     return user;
 };
+
+export const fetchAPI=async(requestType,inputData,url,context)=>{
+    
+    await fetch(apiUrl+url,{
+        method:requestType,
+        header:{
+          "Content-Type":"application/json",
+          "Accept":"application/json"
+        },
+        body:JSON.stringify(inputData)
+    })
+    .then(response=>{
+        return response.json();
+    })
+    .then((contents)=>{
+        context.setState(
+            {
+                data:contents
+            }
+        )
+        
+
+        return contents;
+        
+    })
+}
 
 //Guideline sizes are based on standard ~5" screen mobile device
 const guidelineBaseWidth = 350;

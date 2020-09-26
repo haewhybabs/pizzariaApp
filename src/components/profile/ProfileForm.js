@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { statusBarBlack,statusBarRed, primaryColorRed, primaryBlack, primaryColor } from '../../constants/styles';
 import { AsyncStorage } from 'react-native';
 import {Styles} from '../../assets/styles/profile';
-import FooterScreen from '../Footer';
+import FooterScreen from '../common/Footer';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Right,Left,Row,Body,Header,Col} from 'native-base';
 import { CheckBox } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome';

@@ -12,8 +12,8 @@ import {Styles} from '../../assets/styles/order';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Input,Icon,Right,Left} from 'native-base';
 import { statusBarBlack,primaryColor } from '../../constants/styles';
 import AsyncStorage from '@react-native-community/async-storage';
-import FooterScreen from '../Footer';
-import HeaderScreen from '../Header';
+import FooterScreen from '../common/Footer';
+import HeaderScreen from '../common/Header';
 import { Header } from 'react-native/Libraries/NewAppScreen';
 export default class Order extends Component {
    
@@ -42,7 +42,16 @@ export default class Order extends Component {
 
                       <View style={Styles.TabCover}>
                         <View style={Styles.TabContainer}>
-                          <Text style={Styles.TabText}>Preferred Coupon</Text>
+                          <View>
+                            <Text style={Styles.TabText}>Preferred Coupon</Text>
+                            <View
+                              style={{
+                                borderBottomColor:primaryColor,
+                                borderBottomWidth: 2,
+                                width:120
+                              }}
+                            />
+                          </View>
 
                           <View style={Styles.LineSeparator}/>
 
@@ -106,7 +115,6 @@ export default class Order extends Component {
                     </View>
                   </View>
                 </Content>
-                
             </Container>
     );
   }

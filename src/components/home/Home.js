@@ -7,7 +7,7 @@ import { statusBarBlack,statusBarRed, primaryColorRed, primaryBlack, primaryColo
 import { AsyncStorage } from 'react-native';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Input,Icon,Right,Left} from 'native-base';
 import {Styles} from '../../assets/styles/home';
-import FooterScreen from '../Footer';
+import FooterScreen from '../common/Footer';
 
 export default class Home extends Component {
   static navigationOptions = {
@@ -105,7 +105,7 @@ export default class Home extends Component {
                     </View>
 
                 </Content>
-                <FooterScreen/>
+                <FooterScreen navigation={this.props.navigation}/>
             </Container>    
             
         )

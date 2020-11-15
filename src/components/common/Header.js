@@ -25,7 +25,7 @@ export default class HeaderScreen extends Component{
                     </Button>                
                 </Left>
                 <Body>
-                    <Text style={{color:'#fff',fontSize:15,fontWeight:'bold'}}>{this.props.title}</Text>
+                    <Text style={{color:'#fff',fontSize:18,fontWeight:'bold'}}>{this.props.title}</Text>
                 </Body>
                 
             </Header>

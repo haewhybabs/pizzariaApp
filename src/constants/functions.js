@@ -8,7 +8,7 @@ export const getUserAsync = async() => {
     return user;
 };
 
-export const fetchAPI=async(requestType,inputData,url,context)=>{
+export const fetchAPI=async(requestType,inputData,url,context,state)=>{
     
     await fetch(apiUrl+url,{
         method:requestType,
@@ -24,7 +24,7 @@ export const fetchAPI=async(requestType,inputData,url,context)=>{
     .then((contents)=>{
         context.setState(
             {
-                data:contents
+                [state]:contents
             }
         )
         
@@ -44,6 +44,13 @@ const moderateScale = (size, factor = 0.25) =>
     size + (scale(size) - size) * factor;
 
 export { scale, verticalScale, moderateScale };
+
+export const logout = () => {
+    
+        // AsyncStorage.removeItem('user')
+        AsyncStorage.removeItem('user');
+   
+};
 
 
 export function validation(value, fieldType) {

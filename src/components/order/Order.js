@@ -15,107 +15,79 @@ import AsyncStorage from '@react-native-community/async-storage';
 import FooterScreen from '../common/Footer';
 import HeaderScreen from '../common/Header';
 import { Header } from 'react-native/Libraries/NewAppScreen';
+import OrderDetails from './OrderDetails';
+import { validation, moderateScale,fetchAPI,getUserAsync, } from '../../constants/functions';
+
 export default class Order extends Component {
    
   constructor(props) {
     super(props); 
+
+    this.state={
+      toppings:undefined,
+      pizzaSize:undefined,
+      franchises:[],
+      deliveryMethod:undefined,
+      isLoading:false
+    }
+    this.fetchHomeData();
   }
   
 
+  async fetchHomeData(){
+    const user = JSON.parse(await getUserAsync());
+    
+    const userData={user_id:user.id}
+    await fetchAPI('POST',userData,'fetch-preference-data',this,'data')
+    let response =this.state.data.response;
+
+    console.log('data',this.state.data)
+
+    const franchises = this.state.data.response ? this.state.data.response.preferenceStore:[]
+
+    this.setState({
+      toppings: response? response.preference.toppings:null,
+      franchises,
+      pizzaSize:response? response.preference.pizzaSize:null,
+      deliveryMethod:response?response.preference.delivery_method:null,
+      isLoading:true
+    })
+
+    
+}
+  
+
   render() {
+    let isLoading=this.state.isLoading;
+
+    if (!isLoading) {
+      return <SpinView />;
+    }
+
+    let {franchises,toppings,deliveryMethod,pizzaSize} = this.state;
+    console.log('test',toppings,pizzaSize)
+
     return (
         
-            <Container>
-              <HeaderScreen title="Order" navigation={this.props.navigation} />
-                <Content>
-                  <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
-                  <View style={Styles.Cover}>
-                    <View style={Styles.ImageCover}>
-                      <Image
-                          source = {require('../../assets/images/dominos.jpg')}
-                          style={{width:150, height:150}}      
-                      />
-                    </View>
-                        
-                    <View>
-                      <Text style={Styles.TextHeader}>Dominos</Text>
-
-                      <View style={Styles.TabCover}>
-                        <View style={Styles.TabContainer}>
-                          <View>
-                            <Text style={Styles.TabText}>Preferred Coupon</Text>
-                            <View
-                              style={{
-                                borderBottomColor:primaryColor,
-                                borderBottomWidth: 2,
-                                width:120
-                              }}
-                            />
-                          </View>
-
-                          <View style={Styles.LineSeparator}/>
-
-                          <Text style={{...Styles.TabText,paddingLeft:5}}>Explore Coupons</Text>
-
-                          <View style={Styles.LineSeparator}/>
-                          <Text style={{...Styles.TabText,paddingLeft:5}}>Sales and Deals</Text>
-                        </View>
-                      </View>
-
-                      <View>
-                        <Text style={Styles.CouponMainHeader}>Coupons</Text>
-                        <View
-                          style={{
-                            borderBottomColor:primaryColor,
-                            borderBottomWidth: 2,
-                            width:120
-                          }}
-                        />
-
-                        <View style={{marginTop:10}}>
-                          <Text style={Styles.CouponHeader}>
-                            Carryout Only: Medium 3-Topping Handmade Pan Pizzas for $7.99
-                          </Text>
-                          <Text style={Styles.MainCouponText}>
-                          Carryout only! Get a medium 3-topping handmade 
-                          pan pizzas for $7.99 when you apply this Dominos Pizza coupon 
-                          code at checkout.
-                          </Text>
-
-                          <View style={Styles.CouponButton}>
-                            <Text style={Styles.CouponButtonText}>
-                              Use this Coupon
-                            </Text>
-                            
-                          </View>
-                          <Text style={{fontWeight:'bold'}}>903930</Text>
-                        </View>
-
-                        <View style={{marginTop:10}}>
-                          <Text style={Styles.CouponHeader}>
-                            Carryout Only: Medium 3-Topping Handmade Pan Pizzas for $7.99
-                          </Text>
-                          <Text style={Styles.MainCouponText}>
-                          Carryout only! Get a medium 3-topping handmade 
-                          pan pizzas for $7.99 when you apply this Dominos Pizza coupon 
-                          code at checkout.
-                          </Text>
-
-                          <View style={Styles.CouponButton}>
-                            <Text style={Styles.CouponButtonText}>
-                              Use this Coupon
-                            </Text>
-                            
-                          </View>
-                          <Text style={{fontWeight:'bold'}}>903930</Text>
-                        </View>
-
-
-                      </View>
-                    </View>
-                  </View>
-                </Content>
-            </Container>
+      <Container>
+        <HeaderScreen title="Order" navigation={this.props.navigation} />
+          <Content>
+            <StatusBar backgroundColor={primaryColor} barStyle="light-content" />
+            <View style={{marginBottom:10}}>
+              {franchises.map((item,index)=>(
+                <OrderDetails 
+                  toppings={toppings}
+                  pizzaSize={pizzaSize}
+                  franchise={item}
+                  deliveryMethod={deliveryMethod}
+                  key={index}
+                />
+              ))}
+            </View>
+            
+          </Content>
+          <FooterScreen navigation={this.props.navigation}/>
+      </Container>
     );
   }
 }

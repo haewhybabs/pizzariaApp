@@ -9,15 +9,18 @@ import {Styles} from '../../assets/styles/profile';
 import FooterScreen from '../common/Footer';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Right,Left,Row,Body} from 'native-base';
 import ProfileForm from './ProfileForm';
+import { validation, moderateScale,fetchAPI,getUserAsync, } from '../../constants/functions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements'
 import HeaderScreen from '../common/Header';
+import SpinView from '../common/Spinner';
 
 export default class Profile extends Component{
 
     static navigationOptions = {
         header: null,
-        drawerLockMode: 'locked-closed'
+        drawerLockMode: 'locked-closed',
+        isLoading:false
     };
     
 
@@ -26,11 +29,75 @@ export default class Profile extends Component{
         super(props)
 
         this.state = {
-            selectedItems:[]
+            selectedItems:[],
+            preferences:undefined,
+           
         };
+
+        this.fetchHomeData();
+    }
+
+    async fetchHomeData(){
+        const user = JSON.parse(await getUserAsync());
+        
+        const userData={user_id:user.id}
+        await fetchAPI('POST',userData,'fetch-preference-data',this,'data')
+
+        console.log('data',this.state.data)
+
+        const franchises = this.state.data.response ? this.state.data.response.preferenceStore:[]
+
+        let displayFranchise = [];
+        if (franchises.length>0){
+            for(let i = 0; i<franchises.length; i++){
+                displayFranchise.push(
+                    franchises[i].franchise
+                ) 
+            }
+
+            this.setState({
+                selectedItems:displayFranchise
+            });
+        }
+
+        this.profilePreference(user.id)
+
+    }
+
+    async profilePreference(user_id){
+        
+        const userData={user_id}
+        await fetchAPI('POST',userData,'profile-preference',this,'preferences')
+
+        
+
+        this.setState({
+            isLoading:true,
+        })
+
     }
 
     render(){
+
+        let {isLoading,data,selectedItems}=this.state;
+        
+        let preference = true;
+        
+        
+       
+        if (!isLoading) {
+            return <SpinView />;
+        }
+
+        let user = this.state.preferences.response.user;
+        let preferences = this.state.preferences.response;
+
+        if(data.success==0){
+            preference=false;
+        }
+        console.log('us',selectedItems)
+
+        
        
         return(           
             <Container>
@@ -41,14 +108,14 @@ export default class Profile extends Component{
                         <View>                    
                             <View style={Styles.HeaderContainer}>
                                 <Image
-                                source = {require('../../assets/images/noImageRed.png')}                         
+                                source = {require('../../assets/images/noImageRed.jpg')}                         
                                 style={Styles.ThumbNail}      
                                 />
                                 <Text style={Styles.MainHeaderText}>
-                                    Ayobami Babalola
+                                    {user.name}
                                 </Text>
-                                <Text style={Styles.SubHeaderText}>Obafemi Awolowo University</Text>
-                                <Text style={Styles.SubHeaderText}>+2348167356839</Text>
+                                <Text style={Styles.SubHeaderText}>{user.address}</Text>
+                                <Text style={Styles.SubHeaderText}>{user.phone}</Text>
                             </View>
                             <View>
                                 <View style={Styles.ForkCover}>
@@ -60,13 +127,21 @@ export default class Profile extends Component{
                             </View>
                             
                             <Text style={Styles.ContentHeader}>Account Settings</Text>
-                            <ProfileForm />
+                            <ProfileForm 
+                            user={user}
+                            preference = {preference}
+                            preferenceData={data}
+                            profilePreferences = {this.state.preferences.response}
+                            selectedItems={selectedItems}
+
+                            />
                             
 
 
                         </View>
                     </View>
                 </Content>
+                <FooterScreen navigation={this.props.navigation}/>
             </Container>
         )
     }

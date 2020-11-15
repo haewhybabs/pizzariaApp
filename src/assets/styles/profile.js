@@ -59,6 +59,39 @@ export const Styles = StyleSheet.create({
         alignSelf:'center',
         fontWeight:'bold'
 
+    },
+    inputStyle:{
+        fontSize:14,
+        
+    },
+    checkboxContainer: {
+        backgroundColor: 'transparent',
+        borderWidth: 0
+    },
+
+    SubmitForm:{
+        borderRadius: 5,
+        borderColor: primaryColor,
+        borderStyle: 'solid',
+        borderWidth: 2,
+        backgroundColor:primaryColor,
+        width: '80%',
+        height: 50,
+        marginTop: 10,
+        alignSelf:'center',
+        marginTop:30,
+        marginBottom:20
+    },
+    SubmitFormContainer:{
+        width:'100%',
+        height:'100%',
+        alignItems:'center',
+        justifyContent:'center',
+    },
+    SubmitFormText:{
+        fontSize:16,
+        color:'#fff',
+        fontWeight:'bold'
     }
 
 });

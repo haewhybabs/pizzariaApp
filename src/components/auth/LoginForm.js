@@ -30,7 +30,7 @@ export default class LoginForm extends Component {
     let {email,password}=this.state;
     let inputData={email,password}
 
-    await fetchAPI('POST',inputData,'login',this)
+    await fetchAPI('POST',inputData,'login',this,'data')
     let data=this.state.data;
     if(data.success==0){
       ToastAndroid.show('Invalid Email or Password',ToastAndroid.LONG)
@@ -39,10 +39,12 @@ export default class LoginForm extends Component {
 
     
     
+      AsyncStorage.setItem('user', JSON.stringify(data.response.user), () =>
+        this.props.navigation.navigate('App')
+      );
+   
 
-    AsyncStorage.setItem('user', JSON.stringify(data.response), () =>
-      this.props.navigation.navigate('App')
-    );
+    
     ToastAndroid.show(`Welcome ${data.response.user.name}`, ToastAndroid.LONG);
     
   }

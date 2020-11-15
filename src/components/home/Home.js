@@ -8,7 +8,10 @@ import { AsyncStorage } from 'react-native';
 import {Container,Root,Footer,Button,Card,CardItem,Content,Thumbnail,Input,Icon,Right,Left} from 'native-base';
 import {Styles} from '../../assets/styles/home';
 import FooterScreen from '../common/Footer';
-
+import SpinView from '../common/Spinner';
+import { validation, moderateScale,fetchAPI,getUserAsync, } from '../../constants/functions';
+import { monthNames } from '../../constants/strings';
+import HeaderScreen from '../common/Header';
 export default class Home extends Component {
   static navigationOptions = {
     header: null,
@@ -19,29 +22,85 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
 
-        
+        this.state={
+            data:undefined,
+            isLoading:false
+
+        }
+
+        this.fetchHomeData();
     }
+
+
+    async fetchHomeData(){
+        const user = JSON.parse(await getUserAsync());
+        const userData={user_id:user.id}
+        
+        await fetchAPI('POST',userData,'fetch-preference-data',this,'data')
+
+        console.log('data',this.state.data)
+
+        this.setState({
+            isLoading:true,
+            user:user
+        })
+
+    }
+
+    
  
     render() {
+        let {isLoading,data,user}=this.state;
+
+
+        
+
+        if (!isLoading) {
+            return <SpinView />;
+        }
+
+        console.log('da',data)
+
+        let details=null;
+        
+        let displayStore=[];
+        if (data.response){
+            let stores=data.response.preferenceStore;
+            details=data.response.preference
+            
+
+            for(let i=0; i<stores.length;i++){
+                displayStore.push(
+                    stores[i].name,' , '
+                )
+            }
+        }
+
+        
+        const d = new Date();
+        const todayDate = monthNames[d.getMonth()] + ' '+ d.getDate();
+        
         return (
             <Container>
+            <HeaderScreen title="Home" navigation={this.props.navigation}/>
                 <Content>
+                <StatusBar backgroundColor={statusBarRed} barStyle="light-content" /> 
                     <View style={Styles.Cover}>
                         <StatusBar backgroundColor={statusBarRed} barStyle="light-content" />
                         <View style={Styles.Container}>
                             <View style={Styles.HeaderWrapper}>
-                                <Text style={Styles.HeaderText}>Welcome Ayobami,</Text>
+                                <Text style={Styles.HeaderText}>Welcome {user.name},</Text>
 
                                 <View style={Styles.ThumbNailWrapper}>
                                     <Image
-                                    source = {require('../../assets/images/noImageRed.png')}                         
+                                    source = {require('../../assets/images/noImageRed.jpg')}                         
                                     style={Styles.ThumbNail}      
                                     />
                                 </View>
                             </View>
 
                             <View>
-                                <Text style={Styles.SubHeaderText}>Today, July 18</Text>
+                                <Text style={Styles.SubHeaderText}>Today, {todayDate}</Text>
                             </View>
 
                             <View style={Styles.CardContainer}>
@@ -56,7 +115,8 @@ export default class Home extends Component {
                                                 /> 
                                             </View>
                                         </View>
-                                        <Text style={Styles.DeliverySubText}>Pick up</Text>
+                                        <Text style={Styles.DeliverySubText}>{details?
+                                        details.delivery_method: 'nill'}</Text>
                     
                                     </View>
                                 </View>
@@ -72,7 +132,8 @@ export default class Home extends Component {
                                                 /> 
                                             </View>
                                         </View>
-                                        <Text style={Styles.DeliverySubText}>Medium</Text>
+                                        <Text style={Styles.DeliverySubText}>{details?
+                                        details.pizzaSize: 'nill'}</Text>
                     
                                     </View>
                                 </View>
@@ -87,16 +148,16 @@ export default class Home extends Component {
                                                 /> 
                                             </View>
                                         </View>
-                                        <Text style={Styles.FranchiseSubText}>Dominos,PizzaHut,PapaJohns</Text>
+                                        <Text style={Styles.FranchiseSubText}>{displayStore}</Text>
                     
                                     </View>
                                 </View>
 
-                                <View style={Styles.OrderProceed} onPress={()=>this.props.navigation.navigate('Profile')}>
+                                <TouchableOpacity style={Styles.OrderProceed} onPress={()=>this.props.navigation.navigate('Order')}>
                                     <View style={Styles.OrderProceedContainer}>
                                         <Text style={Styles.OrderProceedText}>Proceed to order</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                             
                             
